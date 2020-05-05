@@ -30,9 +30,9 @@ const Login = ({setter}) =>
       document.cookie = 'X-Authentication=' + (json.token || "")
       ret.logged_in = true
     }).catch(reason => console.error(reason))
-    fetch(`http://${API_HOST}/api/v1/current_user/`)
-    .then(res => res.json())
-    .then(json => ret.username = json.user.username)
+    // fetch(`http://${API_HOST}/api/v1/current_user/`)
+    // .then(res => res.json())
+    // .then(json => ret.username = json.user.username)
     setter(ret)
   }
 

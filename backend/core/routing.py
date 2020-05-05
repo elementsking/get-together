@@ -2,7 +2,7 @@ import chat.routing
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.db import close_old_connections
-from api.models import User
+from api.models import GetTogetherUser
 from rest_framework.authtoken.models import Token
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
@@ -33,7 +33,7 @@ class QueryAuthMiddleware:
             if 'X-Authentication' in str(x):
                 token = re.sub('[{}]'.format(string.punctuation), '', x.split('=')[1])
         token = Token.objects.get(key=token)
-        user = User.objects.get(pk=token.user.pk)
+        user = GetTogetherUser.objects.get(pk=token.user.pk)
 
         # Return the inner application directly and let it run everything else
         return self.inner(dict(scope, user=user))

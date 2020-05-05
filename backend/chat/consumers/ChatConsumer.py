@@ -2,7 +2,7 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from api.models import User, Message, Group, Membership
+from api.models import GetTogetherUser as User, Message, Group, Membership
 from channels.auth import login
 
 class ChatConsumer(WebsocketConsumer):

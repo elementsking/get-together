@@ -10,7 +10,7 @@ class Message(models.Model):
 
 
 class GetTogetherUser(AbstractUser):
-    messages = models.ForeignKey(Message, on_delete=models.CASCADE)
+    messages = models.ForeignKey(Message, on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Group(models.Model):
