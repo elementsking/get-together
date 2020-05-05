@@ -28,6 +28,15 @@ class ChatConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
+
+        user = self.scope["user"]
+
+        group, created = Group.objects.get_or_create(
+            name=self.room_group_name,
+        )
+        group.members.remove(user)
+        membership = Membership(person_id=user.id, group=group)
+        membership.delete()
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
@@ -54,6 +63,10 @@ class ChatConsumer(WebsocketConsumer):
         message = event['message']
 
         user = User.objects.get(id=event['user'])
+        msg_obj = Message(content=message)
+        msg_obj.save()
+        user.messages.add(msg_obj)
+        user.save()
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({

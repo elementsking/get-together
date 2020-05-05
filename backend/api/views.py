@@ -7,8 +7,10 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import viewsets
+from api.models import *
 
-from .serializers import UserSerializer, UserSerializerWithToken
+from .serializers import UserSerializer, UserSerializerWithToken, GroupSerializer
 
 
 class ReactAppView(View):
@@ -49,3 +51,11 @@ class UserList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GroupViewSet(viewsets.ViewSet):
+    permissions = (permissions.AllowAny)
+
+    def list(self, request):
+        queryset = Group.objects.all()
+        serializer = GroupSerializer(queryset, many=True)
+        return Response(serializer.data)

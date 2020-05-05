@@ -10,7 +10,7 @@ class Message(models.Model):
 
 
 class GetTogetherUser(AbstractUser):
-    messages = models.ForeignKey(Message, on_delete=models.CASCADE, blank=True, null=True)
+    messages = models.ManyToManyField(Message, blank=True, null=True)
 
 
 class Group(models.Model):
@@ -22,4 +22,3 @@ class Membership(models.Model):
     person = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     date_joined = models.DateField(auto_now_add=True)
-
