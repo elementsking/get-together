@@ -11,6 +11,10 @@ markdown = "*"
 ptvsd = "*"
 django-filter = "*"
 "psycopg2-binary" = "*"
+channels ="*"
+channels_redis = "*"
+djangorestframework-jwt = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

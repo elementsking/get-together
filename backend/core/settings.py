@@ -28,6 +28,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '172.20.0.2']
 
 # Application definition
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,12 +39,15 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
 
-    'api'
+    'api',
+    'channels',
+    'chat'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -127,16 +131,39 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 USE_VSCODE_DEBUGGER = bool(int(os.getenv("USE_VSCODE_DEBUGGER", default=0)))
 
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
 
 REACT_APP_DIR = os.path.join(os.path.dirname(BASE_DIR), 'frontend')
 REACT_APP_URL = os.getenv("REACT_APP_URL", default="http://0.0.0.0:8101"),
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+ASGI_APPLICATION = "core.routing.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('redis', 6379)]
+        }
+    }
+}
+
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'api.utils.my_jwt_response_handler'
+}
+
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+AUTH_USER_MODEL = 'api.GetTogetherUser'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static')
+# ]

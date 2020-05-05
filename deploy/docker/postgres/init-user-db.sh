@@ -7,6 +7,6 @@
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$DB_USER" <<-EOSQL
-    CREATE DATABASE dr_example;
-    GRANT ALL PRIVILEGES ON DATABASE dr_example TO postgres;
+    CREATE DATABASE get_together;
+    GRANT ALL PRIVILEGES ON DATABASE get_together TO postgres;
 EOSQL

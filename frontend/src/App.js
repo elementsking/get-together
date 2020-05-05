@@ -1,23 +1,60 @@
-import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { useState } from 'react'
+import './App.css'
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useParams,
+  useRouteMatch,
+}                          from 'react-router-dom'
+import Navbar              from 'react-bootstrap/Navbar'
+import Nav                 from 'react-bootstrap/Nav'
+import Button              from 'react-bootstrap/Button'
+import Room                from './Room'
+import Login               from './Login'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload. :)
-        </p>
-        <h2>Environment Variables:</h2>
-        <p className="App-intro">{process.env.REACT_APP_TEST}</p>
-      </div>
-    );
-  }
+export const API_HOST = 'localhost:32784'
+
+const App = () =>
+{
+
+  const [logState, setLogState] = useState({
+    logged_in: false,
+    username: '',
+  })
+
+  return <Router>
+    <Navbar bg="light" expand="lg">
+      <Navbar.Brand href="#/">Get Together</Navbar.Brand>
+        <Nav className="mr-auto">
+          <Nav.Link href={'/chat/hippo'}>Groups</Nav.Link>
+        </Nav>
+      <Nav.Item>{logState.username ? logState.username : <Button
+        href={'/login'}>Log in</Button>}</Nav.Item>
+    </Navbar>
+
+    <div>
+      <Switch>
+        <Route path="/chat/:id">
+          <Room/>
+        </Route>
+        <Route path="/chat/">
+          <Room/>
+        </Route>
+        <Route path={'/login'}>
+          <Login setter={setLogState}/>
+        </Route>
+        <Route path="/">
+          <Home/>
+        </Route>
+      </Switch>
+    </div>
+  </Router>
 }
 
-export default App;
+const Home = () =>
+{
+  return <div></div>
+}
+
+export default App
