@@ -1,14 +1,15 @@
 import os
+from api.models import Group, Membership
 from django.conf import settings
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.views.generic import View
 from rest_framework import permissions, status
-from rest_framework.decorators import api_view
+from rest_framework import viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import viewsets
-from api.models import *
 
 from .serializers import UserSerializer, UserSerializerWithToken, GroupSerializer
 
@@ -28,11 +29,12 @@ class ReactAppView(View):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def current_user(request):
     """
     Determine the current user by their token, and return their data
     """
-
+    print(request.user)
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
@@ -59,3 +61,15 @@ class GroupViewSet(viewsets.ViewSet):
         queryset = Group.objects.all()
         serializer = GroupSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class MessageViewSet(viewsets.ViewSet):
+
+    def list(self, request):
+        queryset = request.user.messages.all()
+
+
+class MembershipViewSet(viewsets.ViewSet):
+
+    def list(self, request):
+        queryset = Membership.messages.filter(user=request.user)

@@ -1,13 +1,9 @@
 import chat.routing
-from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter, URLRouter
-from django.db import close_old_connections
-from api.models import GetTogetherUser
-from rest_framework.authtoken.models import Token
-from channels.db import database_sync_to_async
-from asgiref.sync import sync_to_async
 import re
-import string
+from channels.db import database_sync_to_async
+from channels.routing import ProtocolTypeRouter, URLRouter
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 @database_sync_to_async
 def get_token(token):
@@ -28,12 +24,16 @@ class QueryAuthMiddleware:
     def __call__(self, scope):
 
         cookies = [x[1] for x in scope['headers'] if 'cookie' in str(x[0])][0]
-        token = ''
+        token = None
         for x in str(cookies).split(';'):
             if 'X-Authentication' in str(x):
-                token = re.sub('[{}]'.format(string.punctuation), '', x.split('=')[1])
-        token = Token.objects.get(key=token)
-        user = GetTogetherUser.objects.get(pk=token.user.pk)
+                token = re.sub('[\']', '', x.split('=')[1])
+                print(token)
+        assert (token, 'No token received!')
+        jwt_auth = JWTAuthentication()
+        validated_token = jwt_auth.get_validated_token(token)
+        user = jwt_auth.get_user(validated_token)
+        # user = GetTogetherUser.objects.get(pk=token.user.pk)
 
         # Return the inner application directly and let it run everything else
         return self.inner(dict(scope, user=user))

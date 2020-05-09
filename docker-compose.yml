@@ -21,7 +21,7 @@ services:
    volumes:
      - pgdata:/var/lib/postgresql/data/ # Preserves db between runs.
    ports:
-     - 5432
+     - 5432:5432
   backend:
    container_name: get_together_backend
    hostname: get_together_backend

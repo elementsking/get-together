@@ -1,9 +1,9 @@
 # chat/consumers.py
 import json
+from api.models import GetTogetherUser as User, Message, Group, Membership
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from api.models import GetTogetherUser as User, Message, Group, Membership
-from channels.auth import login
+
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -12,12 +12,11 @@ class ChatConsumer(WebsocketConsumer):
 
         user = self.scope['user']
 
-        group, created = Group.objects.get_or_create(
-            name=self.room_group_name,
+        group = Group.objects.get(
+            name=self.room_name,
         )
-        group.members.add(user)
-        membership = Membership(person_id=user.id, group=group)
-        membership.save()
+
+        membership = Membership.objects.get_or_create(person_id=user.id, group=group)
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -28,15 +27,15 @@ class ChatConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
-
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = 'chat_%s' % self.room_name
         user = self.scope["user"]
 
-        group, created = Group.objects.get_or_create(
-            name=self.room_group_name,
-        )
-        group.members.remove(user)
-        membership = Membership(person_id=user.id, group=group)
-        membership.delete()
+        # group = Group.objects.get(
+        #     name=self.room_name,
+        # )
+        # membership = Membership(person_id=user.id, group=group)
+        # membership.delete()
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
@@ -45,6 +44,7 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data):
+        room_name = self.scope['url_route']['kwargs']['room_name']
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
@@ -54,17 +54,25 @@ class ChatConsumer(WebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
+                'group': room_name,
                 'user': self.scope['user'].id
             }
         )
 
     # Receive message from room group
     def chat_message(self, event):
+        """
+        Whenever a chat gets a message, it should repeat it on to all other members of the group
+        :param event:
+        :return:
+        """
         message = event['message']
 
         user = User.objects.get(id=event['user'])
-        msg_obj = Message(content=message)
+        msg_obj = Message(from_user=user, content=message)
         msg_obj.save()
+        for user in Group.objects.get(name=event["group"]).members.all():
+            msg_obj.to_users.add(user)
         user.messages.add(msg_obj)
         user.save()
 
