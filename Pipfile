@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+django = ">=2.2.10"
 python-dotenv = "*"
-django-rest-framework = "*"
+django-rest-framework = ">=3.9.1"
 markdown = "*"
 ptvsd = "*"
 django-filter = "*"
