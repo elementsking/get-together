@@ -6,6 +6,11 @@ export function authHeader ()
   const currentUser = authenticationService.currentUserValue
   if (currentUser && currentUser.access)
   {
+    if (authenticationService.currentUserValue.expiresAt < new Date().getTime())
+    {
+      authenticationService.refresh()
+    }
+
     return {Authorization: `Bearer ${currentUser.access}`}
   } else
   {
