@@ -1,7 +1,7 @@
 # chat/consumers.py
 import json
 
-from api.models import GetTogetherUser as User, Message, Group, Membership
+from api.models import Message, Group, Membership
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
@@ -76,12 +76,6 @@ class ChatConsumer(WebsocketConsumer):
         :return:
         """
         message = event['message']
-
-        user = User.objects.get(id=event['user'])
-        msg_obj = Message(content=message)
-        msg_obj.save()
-        user.messages.add(msg_obj)
-        user.save()
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
