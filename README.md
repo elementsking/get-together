@@ -4,9 +4,12 @@ A chat app that allows for planning, hosting, and contributing to events and com
 
 ## To start the services:
 1. clone this repository
-2. docker-compose up -d
-3. cd frontend
-4. yarn install
+2. `cp .env.sample .env`
+3. `cp backend/core/local_settings.sample.py backend/core/local_settings.py`
+3. `docker-compose up -d --build`
+4. `cd frontend`
+5. `yarn install`
+6. `cd ..`
 
 ## To use the chat service:
 1. start the backend services
@@ -19,11 +22,7 @@ and follow the steps to create a superuser
 and log in with that new user
 7. Click 'Groups'
 8. Use the form to create a new Group (which can't contain spaces)
-9. you can just duplicate the window and send messages between browsers
-
-## Development
-1. Start the services
-2. cd frontend && yarn start
+9. duplicate the window and send messages between browser windows
 
 ## Known Issues
 * This app does not refresh tokens reliably at this time, 
@@ -35,3 +34,13 @@ Tokens are used to authenticate you when you open a websocket.
 * Pull all old messages for a Group
 * CRUD on Events in a Group
 * Show a homepage where a User's Groups and Events are pulled
+* Move websocket to root of app and subscribe to topics rather than "Rooms/Groups"
+
+## Frontend Development
+1. Start the services
+2. cd frontend && yarn start
+3. Window will hot-reload as code in frontend/src changes
+
+## Backend Development
+1. Start the services
+2. Django Daphne server will reload as code in backend/ changes
