@@ -48,9 +48,9 @@ const App = () =>
       <Row>
         <Col xs={12} md={8}>
           <Navbar bg="light" expand="lg">
-            <Navbar.Brand href="#/">Get Together</Navbar.Brand>
+            <Navbar.Brand href="/">Get Together</Navbar.Brand>
             <Nav className="mr-auto">
-              <Nav.Link href={'/chat/'}>Groups</Nav.Link>
+              <Nav.Link href={'/chat/'}>Chat</Nav.Link>
             </Nav>
             <Nav.Item>
               {currentUser ?

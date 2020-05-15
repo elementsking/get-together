@@ -1,5 +1,6 @@
 # chat/consumers.py
 import json
+
 from api.models import GetTogetherUser as User, Message, Group, Membership
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -16,7 +17,7 @@ class ChatConsumer(WebsocketConsumer):
             name=self.room_name,
         )
 
-        membership = Membership.objects.get_or_create(person_id=user.id, group=group)
+        membership, created = Membership.objects.get_or_create(person_id=user.id, group=group)
 
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -43,7 +44,7 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     # Receive message from WebSocket
-    def receive(self, text_data):
+    def receive(self, text_data=None, bytes_data=None):
         room_name = self.scope['url_route']['kwargs']['room_name']
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
@@ -69,10 +70,8 @@ class ChatConsumer(WebsocketConsumer):
         message = event['message']
 
         user = User.objects.get(id=event['user'])
-        msg_obj = Message(from_user=user, content=message)
+        msg_obj = Message(content=message)
         msg_obj.save()
-        for user in Group.objects.get(name=event["group"]).members.all():
-            msg_obj.to_users.add(user)
         user.messages.add(msg_obj)
         user.save()
 
