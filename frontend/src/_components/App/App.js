@@ -29,8 +29,13 @@ const App = () =>
   const [rooms, setRooms] = useState([])
   useEffect(() =>
   {
-    groupService.getAll().
-      then(groups => setRooms(groups))
+    const getAll = () =>
+    {
+      groupService.getAll().
+        then(groups => setRooms(groups))
+    }
+
+    getAll()
   }, [])
 
   const logout = () =>
