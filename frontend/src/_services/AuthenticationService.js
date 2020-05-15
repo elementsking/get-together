@@ -29,7 +29,8 @@ function refresh ()
     }
     return fetch(`${API_URL}/token/refresh/`, requestOptions).
       then(handleResponse).
-      then(_saveUser)
+      then(_saveUser).
+      then(getCurrentUsername)
   }
 }
 
@@ -60,24 +61,7 @@ function login (username, password)
   return fetch(`${API_URL}/token/`, requestOptions).
     then(handleResponse).
     then(_saveUser).
-    then(() =>
-      fetch(`${API_URL}/current_user/`, {
-        method: 'GET',
-        headers: {
-          ...authHeader(),
-        },
-      }).
-        then(res => res.json()).
-        then(json =>
-        {
-          const ret = JSON.parse(localStorage.getItem('currentUser'))
-          ret.username = json.username ? json.username : null
-          localStorage.setItem('currentUser', JSON.stringify(ret))
-          const user = authenticationService.currentUserValue
-          currentUserSubject.next(user)
-        }),
-    )
-
+    then(getCurrentUsername)
 }
 
 function logout ()
@@ -85,4 +69,23 @@ function logout ()
   // remove user from local storage to log user out
   localStorage.removeItem('currentUser')
   currentUserSubject.next(null)
+}
+
+const getCurrentUsername = () =>
+{
+  fetch(`${API_URL}/current_user/`, {
+    method: 'GET',
+    headers: {
+      ...authHeader(),
+    },
+  }).
+    then(res => res.json()).
+    then(json =>
+    {
+      const ret = JSON.parse(localStorage.getItem('currentUser'))
+      ret.username = json.username ? json.username : null
+      localStorage.setItem('currentUser', JSON.stringify(ret))
+      const user = authenticationService.currentUserValue
+      currentUserSubject.next(user)
+    })
 }
