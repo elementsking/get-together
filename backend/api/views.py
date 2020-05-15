@@ -1,4 +1,5 @@
 import os
+
 from api.models import Group, Membership
 from django.conf import settings
 from django.http import HttpResponse
@@ -54,13 +55,11 @@ class UserList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class GroupViewSet(viewsets.ViewSet):
-    permissions = (permissions.AllowAny)
 
-    def list(self, request):
-        queryset = Group.objects.all()
-        serializer = GroupSerializer(queryset, many=True)
-        return Response(serializer.data)
+class GroupViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.AllowAny]
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
 
 
 class MessageViewSet(viewsets.ViewSet):
