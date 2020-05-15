@@ -1,7 +1,7 @@
 import { API_URL }                    from './config'
 import { authHeader, handleResponse } from './util'
 
-export const groupService = {
+export const messageService = {
   getAll,
 }
 
