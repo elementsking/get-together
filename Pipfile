@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 django = ">=2.2.10"
 python-dotenv = "*"
-django-rest-framework = ">=3.9.1"
+django-rest-framework = "*"
 markdown = "*"
 ptvsd = "*"
 django-filter = "*"
