@@ -32,16 +32,16 @@ const Rooms = ({rooms, setRooms}) =>
     <h2>Rooms</h2>
     <ListGroup>
       {rooms.map((room) =>
-        <ListGroup.Item key={room.name}>
-          <Link to={`${room.name}`}>
+        <ListGroup.Item key={room.id}>
+          <Link to={`${room.id}`}>
             {room.name}
           </Link>
         </ListGroup.Item>,
       )}
     </ListGroup>
     <Switch>
-      {rooms.map((room) => <Route key={room.name} path={`${room.name}`}>
-        <Room key={room.name}/>
+      {rooms.map((room) => <Route key={room.id} path={`${room.id}`}>
+        <Room key={room.id} room={room}/>
       </Route>)}
 
       <Route path={match.path}>

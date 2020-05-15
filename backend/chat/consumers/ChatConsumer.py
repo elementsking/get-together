@@ -14,7 +14,7 @@ class ChatConsumer(WebsocketConsumer):
         user = self.scope['user']
 
         group = Group.objects.get(
-            name=self.room_name,
+            id=self.room_name,
         )
 
         membership, created = Membership.objects.get_or_create(person_id=user.id, group=group)
@@ -48,6 +48,14 @@ class ChatConsumer(WebsocketConsumer):
         room_name = self.scope['url_route']['kwargs']['room_name']
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+
+        msg_obj = Message(content=message)
+        msg_obj.save()
+
+        # Save it as a post on the group for later retrieval
+        group = Group.objects.get(id=room_name)
+        group.posts.add(msg_obj)
+        group.save()
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
