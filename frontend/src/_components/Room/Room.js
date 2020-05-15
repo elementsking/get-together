@@ -23,6 +23,7 @@ const Room = () =>
       chatLog.current.value += data.message + '\n'
     },
     () => 'closing websocket',
+    () => chatLog.current.value += 'Failed to connect to server... Retrying\n',
   )
 
   const transmitMessage = () =>
@@ -55,7 +56,7 @@ const Room = () =>
       <Col xs={1} md={1}>
         <input id={'chat-message-submit'} type={'button'}
                value={'Send'}
-               onClick={(e) => transmitMessage()} ref={submitButton}/>
+               onClick={transmitMessage} ref={submitButton}/>
       </Col>
     </Row>
   </>

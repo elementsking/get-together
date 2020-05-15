@@ -2,7 +2,7 @@ import { API_HOST }              from './config'
 import { authenticationService } from './AuthenticationService'
 import useWebSocket              from 'react-use-websocket'
 
-export const useRoom = (id, onOpen, onMessage, onClose) =>
+export const useRoom = (id, onOpen, onMessage, onClose, onError) =>
 {
   authenticationService.refresh()
   const socketUrl = 'ws://'
@@ -15,8 +15,9 @@ export const useRoom = (id, onOpen, onMessage, onClose) =>
     onOpen: onOpen,
     onMessage: onMessage,
     onClose: onClose,
+    onError: onError,
     //Will attempt to reconnect on all close events, such as server shutting down
-    shouldReconnect: (closeEvent) => true,
+    shouldReconnect: () => true,
   })
 
 }
