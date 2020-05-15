@@ -37,7 +37,7 @@ const Room = () =>
   {
     if (event.keyCode === 13)
     {
-      submitButton.click()
+      submitButton.current.click()
     }
   }
 
