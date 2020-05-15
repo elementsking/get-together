@@ -20,7 +20,7 @@ and follow the steps to create a superuser
 5. `cd frontend; yarn start` to start the React development server
 6. Navigate to http://localhost:3000 and click the "Log In" button in the React app 
 and log in with that new user
-7. Click 'Groups'
+7. Click 'Chats'
 8. Use the form to create a new Group (which can't contain spaces)
 9. duplicate the window and send messages between browser windows
 
