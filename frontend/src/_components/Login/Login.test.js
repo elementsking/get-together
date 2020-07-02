@@ -2,7 +2,7 @@ import React            from 'react'
 import { render }       from 'react-dom'
 import { MemoryRouter } from 'react-router-dom'
 import { act }          from 'react-dom/test-utils'
-import Login            from '../Login/Login'
+import Login            from './Login'
 
 let container
 

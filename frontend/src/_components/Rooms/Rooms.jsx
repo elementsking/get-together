@@ -17,15 +17,13 @@ const Rooms = ({rooms, setRooms}) =>
     const room = {
       name: roomRef.current.value,
     }
-    groupService.create(room).
-      then((json) =>
-      {
-        setRooms([...rooms, json])
-      }).
-      catch((err) =>
-      {
-        setErrors(err)
-      })
+    groupService.create(room).then((json) =>
+    {
+      setRooms([...rooms, json])
+    }).catch((err) =>
+    {
+      setErrors(err)
+    })
   }
 
   return <div>

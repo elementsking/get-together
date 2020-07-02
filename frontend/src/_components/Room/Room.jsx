@@ -32,11 +32,9 @@ const Room = (room) =>
     groupService.get(id).then((group) =>
     {
       group.posts.map((msg) =>
-      {
-        chatLog.current.value += msg.content + '\t' + msg.date_sent + '\n'
-      })
+        chatLog.current.value += msg.content + '\t' + msg.date_sent + '\n')
     })
-  }, [])
+  }, [id])
 
   const transmitMessage = () =>
   {

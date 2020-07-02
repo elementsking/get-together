@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import View
 from rest_framework import permissions, status
 from rest_framework import viewsets
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -61,14 +61,28 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
+    @action(detail=True, methods=['GET'])
+    def posts(self, request):
+        serializer = self.get_serializer(self.get_object(), many=False)
+        return Response(serializer.data)
+
 
 class MessageViewSet(viewsets.ViewSet):
 
     def list(self, request):
+        params = request.query_params
         queryset = request.user.messages.all()
 
 
+class GroupMessagesViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        group_name = self.request.query_params['group']
+        if group_name:
+            return Group.objects.get(name=group_name).messages
+
+
 class MembershipViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
 
     def list(self, request):
-        queryset = Membership.messages.filter(user=request.user)
+        queryset = Membership.objects.filter(person=request.user)

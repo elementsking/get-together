@@ -22,7 +22,7 @@ function refresh ()
     console.log('refreshing token')
     const requestOptions = {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         'refresh': authenticationService.currentUserValue.refresh,
       }),
@@ -54,8 +54,8 @@ function login (username, password)
 {
   const requestOptions = {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({username, password}),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
   }
 
   return fetch(`${API_URL}/token/`, requestOptions).
@@ -78,14 +78,12 @@ const getCurrentUsername = () =>
     headers: {
       ...authHeader(),
     },
-  }).
-    then(res => res.json()).
-    then(json =>
-    {
-      const ret = JSON.parse(localStorage.getItem('currentUser'))
-      ret.username = json.username ? json.username : null
-      localStorage.setItem('currentUser', JSON.stringify(ret))
-      const user = authenticationService.currentUserValue
-      currentUserSubject.next(user)
-    })
+  }).then(res => res.json()).then(json =>
+  {
+    const ret = JSON.parse(localStorage.getItem('currentUser'))
+    ret.username = json.username ? json.username : null
+    localStorage.setItem('currentUser', JSON.stringify(ret))
+    const user = authenticationService.currentUserValue
+    currentUserSubject.next(user)
+  })
 }

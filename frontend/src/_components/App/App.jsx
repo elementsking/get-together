@@ -24,15 +24,14 @@ const App = () =>
   useEffect(() =>
   {
     authenticationService.currentUser.subscribe(x => setCurrentUser(x))
-  }, [])
+  }, [currentUser])
 
   const [rooms, setRooms] = useState([])
   useEffect(() =>
   {
     const getAll = () =>
     {
-      groupService.getAll().
-        then(groups => setRooms(groups))
+      groupService.getAll().then(groups => setRooms(groups))
     }
 
     getAll()
